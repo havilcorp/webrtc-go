@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <video id="player" autoPlay="true" muted="true" playsInline="true"> </video>
+    <button id="capture">Capture</button>
+    <canvas id="canvas" width=320 height=240></canvas>
+</body>
+
+<script>
+    const player = document.getElementById('player')
+    const canvas = document.getElementById('canvas')
+    const context = canvas.getContext('2d')
+    const captureButton = document.getElementById('capture')
+
+    const constraints = {
+        networkQuality: { local: 1, remote: 1 },
+        video: {
+            width: { exact: 1280 },
+            height: { exact: 720 },
+        },
+        maxAudioBitrate: 16000,
+        bandwidthProfile: {
+            video: {
+                mode: 'collaboration',
+            },
+        },
+    }
+
+    captureButton.addEventListener('click', () => {
+        // Draw the video frame to the canvas.
+        context.drawImage(player, 0, 0, canvas.width, canvas.height)
+    })
+
+    // Attach the video stream to the video element and autoplay.
+    navigator.mediaDevices.getUserMedia(constraints)
+        .then((stream) => {
+            player.srcObject = stream
+        }).catch((e) => {
+            console.log(e)
+        })
+</script>
